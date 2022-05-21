@@ -14,8 +14,8 @@ else
 
     try
     {
-        var fileParser = new FileParser(args[0]);
-        await foreach (string currentLine in fileParser.ReadContent(token))
+        var fileParser = new StreamParser(new FileManager(args[0]));
+        await foreach (string? currentLine in fileParser.ReadContent(token))
         {
             Console.WriteLine(currentLine);
         }
