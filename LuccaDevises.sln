@@ -3,7 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32516.85
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuccaDevises", "LuccaDevises\LuccaDevises.csproj", "{68074B1D-9A33-4461-AFD0-09E08CC36CB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LuccaDevises", "LuccaDevises\LuccaDevises.csproj", "{68074B1D-9A33-4461-AFD0-09E08CC36CB9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Lucca.CurrencyConverer.Tests", "Lucca.CurrencyConverer.Tests\Lucca.CurrencyConverer.Tests.csproj", "{9C567C43-7C3C-4A48-8A97-CCE055B5FDAE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Éléments de solution", "Éléments de solution", "{0496158B-A076-4587-9CAC-824C30A10716}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +22,10 @@ Global
 		{68074B1D-9A33-4461-AFD0-09E08CC36CB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68074B1D-9A33-4461-AFD0-09E08CC36CB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68074B1D-9A33-4461-AFD0-09E08CC36CB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9C567C43-7C3C-4A48-8A97-CCE055B5FDAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C567C43-7C3C-4A48-8A97-CCE055B5FDAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C567C43-7C3C-4A48-8A97-CCE055B5FDAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C567C43-7C3C-4A48-8A97-CCE055B5FDAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

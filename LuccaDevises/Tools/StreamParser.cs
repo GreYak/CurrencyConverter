@@ -68,6 +68,8 @@ namespace LuccaDevises.Tools
                         }
                         yield return ExtractAndAnalyseOtherLine(await streamReader.ReadLineAsync(), currentLine++, ++exchangeRatesCount);
                     }
+                    if (exchangeRatesCount < ExchangeRatesCount)
+                        throw new InvalidDataException($"Line {currentLine} no exchange rates fond when {ExchangeRatesCount} were expected.");
                 }
 
                 streamReader.Close();
