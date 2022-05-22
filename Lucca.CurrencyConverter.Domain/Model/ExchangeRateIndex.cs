@@ -1,85 +1,8 @@
-﻿using System.Collections;
+﻿using Lucca.CurrencyConverter.Domain.Tools;
+using System.Collections;
 
 namespace Lucca.CurrencyConverter.Domain.Model
 {
-    internal class DictionaryOfList<TKey, TValue>
-        where TKey : notnull
-    {
-        private readonly Dictionary<TKey, List<TValue>> _dic;
-        public DictionaryOfList()
-        {
-            _dic = new Dictionary<TKey, List<TValue>>();
-        }
-
-        public void Add(TKey key, TValue value)
-        {
-            if (!_dic.ContainsKey(key))
-            {
-                _dic.Add(key, new List<TValue>());
-            }
-            _dic[key].Add(value);
-        }
-
-        public void Clear()
-        {
-            foreach (var list in _dic.Values)
-            {
-                list.Clear();
-            }
-            _dic.Clear();
-        }
-
-        internal bool TryGetValue(TKey key, out IReadOnlyList<TValue>? values)
-        {
-            var found = _dic.TryGetValue(key, out List<TValue>? listFound);
-            values = listFound?.AsReadOnly();
-            return found;
-        }
-    }
-
-    internal record IndexedExchangeRate(ExchangeRate ExchangeRate)
-    {
-        private IndexedExchangeRate? _linked;
-
-        public IndexedExchangeRate(Currency from, Currency to, decimal changeRate, IndexedExchangeRate linked):this (new ExchangeRate(from, to, changeRate))
-        {
-            _linked = linked;
-        }
-
-        public int Weight => (_linked?.Weight ?? 0) + 1;
-    }
-
-    internal class IdexedExchangeRateCollection : IEnumerable
-    {
-        public readonly Dictionary<Currency, IndexedExchangeRate> _exchangeRatesByToCurrency;
-
-        public IdexedExchangeRateCollection()
-        {
-            _exchangeRatesByToCurrency = new Dictionary<Currency, IndexedExchangeRate>();
-        }
-
-        public void Add(IndexedExchangeRate indexedExchangeRate)
-        {
-            Currency key = indexedExchangeRate.ExchangeRate.ToCurrency;
-            if (!_exchangeRatesByToCurrency.ContainsKey(key))
-            {
-                _exchangeRatesByToCurrency.Add(key, indexedExchangeRate);
-            }
-            else
-            {
-                if (_exchangeRatesByToCurrency[key].Weight > indexedExchangeRate.Weight)
-                {
-                    _exchangeRatesByToCurrency[key] = indexedExchangeRate;
-                }
-            }
-        }
-
-        public IEnumerator GetEnumerator()
-        {
-            return _exchangeRatesByToCurrency.Values.GetEnumerator();
-        }
-    }
-
     internal class ExchangeRateIndex
     {
         private readonly Dictionary<Currency, IdexedExchangeRateCollection> _mainIndex;
@@ -109,6 +32,14 @@ namespace Lucca.CurrencyConverter.Domain.Model
 
             // Reverse Index
             _reverseIndex.Add(rate.ExchangeRate.ToCurrency, rate);
+        }
+
+        internal ExchangeRate GetExchangeRate(Currency fromCurrency, Currency toCurrency)
+        {
+            if (_mainIndex.ContainsKey(fromCurrency) && _mainIndex[fromCurrency].TryToGetValue(toCurrency, out IndexedExchangeRate? indexedExchangeRate))
+                return indexedExchangeRate!.ExchangeRate;
+
+            throw new ApplicationException($"ExchangeRate {fromCurrency}/{toCurrency} doesn't exist in the registry.");
         }
 
         public void AddExchangeRate(ExchangeRate rate)

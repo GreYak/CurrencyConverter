@@ -24,17 +24,17 @@ namespace LuccaDevises.Tools
         /// <summary>
         /// Source currency for echange.
         /// </summary>
-        public string? FromCurrency { get; private set; }
+        public string FromCurrency { get; private set; } = string.Empty;
 
         /// <summary>
         /// Amount of source currency. 
         /// </summary>
-        public int Amount { get; private set; }
+        public int Amount { get; private set; } 
 
         /// <summary>
         /// Destination currency for echange.
         /// </summary>
-        public string? ToCurrency { get; private set; }
+        public string ToCurrency { get; private set; } = string.Empty;
 
         /// <summary>
         /// Count of given exchanges rates.
@@ -51,7 +51,7 @@ namespace LuccaDevises.Tools
         /// Extract the file content, line after line.
         /// </summary>
         /// <returns>File's lines.</returns>
-        public async IAsyncEnumerable<string> ReadContent([EnumeratorCancellation] CancellationToken cancellationToken)
+        public async IAsyncEnumerable<string> ReadContentAsync([EnumeratorCancellation] CancellationToken cancellationToken)
         {
             int currentLine = 1;
 

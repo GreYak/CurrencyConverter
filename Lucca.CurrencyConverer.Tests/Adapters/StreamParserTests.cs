@@ -77,7 +77,7 @@ namespace Lucca.CurrencyConverer.Tests.Adapters
         public void GivenFileEmpty_WhenReadContent_ThenInvalidDataException()
         {
             Assert.ThrowsAsync<InvalidDataException>(async () => {
-                await foreach (string? line in _streamParserToTest.ReadContent(new CancellationToken()))
+                await foreach (string? line in _streamParserToTest.ReadContentAsync(new CancellationToken()))
                 {
                     Assert.IsTrue(false);
                 }
@@ -91,7 +91,7 @@ namespace Lucca.CurrencyConverer.Tests.Adapters
             StreamContent = () => line1;
 
             Assert.ThrowsAsync<InvalidDataException>(async () => {
-                await foreach (string? line in _streamParserToTest.ReadContent(new CancellationToken()))
+                await foreach (string? line in _streamParserToTest.ReadContentAsync(new CancellationToken()))
                 {
                     Assert.IsTrue(false);
                 }
@@ -106,7 +106,7 @@ namespace Lucca.CurrencyConverer.Tests.Adapters
             int linceCount = 0;
 
             Assert.ThrowsAsync<InvalidDataException>(async () => {
-                await foreach (string? line in _streamParserToTest.ReadContent(new CancellationToken()))
+                await foreach (string? line in _streamParserToTest.ReadContentAsync(new CancellationToken()))
                 {
                     linceCount++;
                     Assert.That(_streamParserToTest.FromCurrency, Is.EqualTo("EUR"));
@@ -128,7 +128,7 @@ namespace Lucca.CurrencyConverer.Tests.Adapters
             int linceCount = 0;
 
             Assert.ThrowsAsync<InvalidDataException>(async () => {
-                await foreach (string? line in _streamParserToTest.ReadContent(new CancellationToken()))
+                await foreach (string? line in _streamParserToTest.ReadContentAsync(new CancellationToken()))
                 {
                     linceCount++;
                     Assert.That(_streamParserToTest.FromCurrency, Is.EqualTo("EUR"));
@@ -148,7 +148,7 @@ namespace Lucca.CurrencyConverer.Tests.Adapters
             int linceCount = 0;
 
             Assert.ThrowsAsync<InvalidDataException>(async () => {
-                await foreach (string? line in _streamParserToTest.ReadContent(new CancellationToken()))
+                await foreach (string? line in _streamParserToTest.ReadContentAsync(new CancellationToken()))
                 {
                     linceCount++;
                     Assert.That(_streamParserToTest.FromCurrency, Is.EqualTo("EUR"));
@@ -169,7 +169,7 @@ namespace Lucca.CurrencyConverer.Tests.Adapters
             int linceCount = 0;
 
             Assert.ThrowsAsync<InvalidDataException>(async () => {
-                await foreach (string? line in _streamParserToTest.ReadContent(new CancellationToken()))
+                await foreach (string? line in _streamParserToTest.ReadContentAsync(new CancellationToken()))
                 {
                     linceCount++;
                     Assert.That(_streamParserToTest.FromCurrency, Is.EqualTo("EUR"));
@@ -189,7 +189,7 @@ namespace Lucca.CurrencyConverer.Tests.Adapters
             int linceCount = 0;
 
             Assert.ThrowsAsync<InvalidDataException>(async () => {
-                await foreach (string? line in _streamParserToTest.ReadContent(new CancellationToken()))
+                await foreach (string? line in _streamParserToTest.ReadContentAsync(new CancellationToken()))
                 {
                     linceCount++;
                     Assert.That(_streamParserToTest.FromCurrency, Is.EqualTo("EUR"));
@@ -209,7 +209,7 @@ namespace Lucca.CurrencyConverer.Tests.Adapters
             int linceCount = 0;
 
             Assert.ThrowsAsync<InvalidDataException>(async () => {
-                await foreach (string? line in _streamParserToTest.ReadContent(new CancellationToken()))
+                await foreach (string? line in _streamParserToTest.ReadContentAsync(new CancellationToken()))
                 {
                     linceCount++;
                     Assert.That(_streamParserToTest.FromCurrency, Is.EqualTo("EUR"));
@@ -228,7 +228,7 @@ namespace Lucca.CurrencyConverer.Tests.Adapters
 
             int linceCount = 0;
 
-            await foreach (string? line in _streamParserToTest.ReadContent(new CancellationToken()))
+            await foreach (string? line in _streamParserToTest.ReadContentAsync(new CancellationToken()))
             {
                 linceCount++;
             };

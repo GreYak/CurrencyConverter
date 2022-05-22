@@ -16,12 +16,13 @@ namespace Lucca.CurrencyConverter.Domain
             _index = new ExchangeRateIndex();
         }
 
-        public Task<int> Convert(Currency fromCurrency, Currency toCurrency, int amount)
+        public int Convert(Currency fromCurrency, Currency toCurrency, int amount)
         {
-            throw new NotImplementedException();
+            ExchangeRate exchangeRate = _index.GetExchangeRate(fromCurrency, toCurrency);
+            return decimal.ToInt32(Math.Round(amount * exchangeRate.Rate));
         }
 
-        public async Task LoadExchangeRates(IAsyncEnumerable<ExchangeRate> exhangeRates, CancellationToken cancellationToken)
+        public async Task LoadExchangeRatesAsync(IAsyncEnumerable<ExchangeRate> exhangeRates, CancellationToken cancellationToken)
         {
             _index.Clear();
 

@@ -32,10 +32,17 @@ static class Program
             try
             {
                 var fileParser = new StreamParser(new FileManager(args[0]));
-                await _currencyConverterService.LoadExchangeRates(fileParser
-                                                                    .ReadContent(token)
-                                                                    .ToExchangeRate(token)
-                                                                  ,token);;
+                await _currencyConverterService.LoadExchangeRatesAsync(fileParser
+                                                                    .ReadContentAsync(token)
+                                                                    .ToExchangeRateAsync(token)
+                                                                  ,token);
+
+               Console.WriteLine();
+               var result = _currencyConverterService.Convert( new Currency(fileParser.FromCurrency),
+                                                                new Currency(fileParser.ToCurrency),
+                                                                fileParser.Amount);
+
+                Console.WriteLine($"Resultat de la conversion => {fileParser.Amount}{fileParser.FromCurrency} = {result}{fileParser.ToCurrency}");
             }
             catch (InvalidDataException exc)
             {
@@ -54,7 +61,7 @@ static class Program
         }
     }
 
-    private static async IAsyncEnumerable<ExchangeRate> ToExchangeRate(this IAsyncEnumerable<string> fileContentEnumerator, [EnumeratorCancellation] CancellationToken token)
+    private static async IAsyncEnumerable<ExchangeRate> ToExchangeRateAsync(this IAsyncEnumerable<string> fileContentEnumerator, [EnumeratorCancellation] CancellationToken token)
     {
         int countTuple = 0;
         await foreach (var currentLine in fileContentEnumerator)

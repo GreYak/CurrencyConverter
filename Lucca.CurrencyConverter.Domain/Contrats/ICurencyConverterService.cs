@@ -13,7 +13,7 @@ namespace Lucca.CurrencyConverter.Domain.Contrats
         /// <param name="exhangeRates">List of <see cref="ExchangeRate"/></param>
         /// <param name="cancellationToken"><see cref="CancellationToken"/></param>
         /// <returns><see cref="Task"/></returns>
-        Task LoadExchangeRates(IAsyncEnumerable<ExchangeRate> exhangeRates, CancellationToken cancellationToken);
+        Task LoadExchangeRatesAsync(IAsyncEnumerable<ExchangeRate> exhangeRates, CancellationToken cancellationToken);
         
         /// <summary>
         /// Convert an amount in a given currency, to another currency.
@@ -22,6 +22,6 @@ namespace Lucca.CurrencyConverter.Domain.Contrats
         /// <param name="toCurrency">Destination currency</param>
         /// <param name="amount">Amount in the <paramref name="fromCurrency"/></param>
         /// <returns>The Amount in the <paramref name="toCurrency"/></returns>
-        Task<int> Convert(Currency fromCurrency, Currency toCurrency, int amount);
+        int Convert(Currency fromCurrency, Currency toCurrency, int amount);
     }
 }
