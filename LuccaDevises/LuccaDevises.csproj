@@ -12,6 +12,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Lucca.CurrencyConverter.Domain\Lucca.CurrencyConverter.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="FilesFolder\Sample.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

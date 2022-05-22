@@ -41,12 +41,17 @@ namespace LuccaDevises.Tools
         /// </summary>
         public int ExchangeRatesCount { get; private set; }
 
+        /// <summary>
+        /// Line of the first exchange rate in the format.
+        /// </summary>
+        public const int FirstExchangeRateLineNumber = 3;
+
 
         /// <summary>
         /// Extract the file content, line after line.
         /// </summary>
         /// <returns>File's lines.</returns>
-        public async IAsyncEnumerable<string?> ReadContent([EnumeratorCancellation] CancellationToken cancellationToken)
+        public async IAsyncEnumerable<string> ReadContent([EnumeratorCancellation] CancellationToken cancellationToken)
         {
             int currentLine = 1;
 
@@ -66,7 +71,7 @@ namespace LuccaDevises.Tools
                         {
                             yield break;
                         }
-                        yield return ExtractAndAnalyseOtherLine(await streamReader.ReadLineAsync(), currentLine++, ++exchangeRatesCount);
+                        yield return ExtractAndAnalyseExchangeRateLine(await streamReader.ReadLineAsync(), currentLine++, ++exchangeRatesCount);
                     }
                     if (exchangeRatesCount < ExchangeRatesCount)
                         throw new InvalidDataException($"Line {currentLine} no exchange rates fond when {ExchangeRatesCount} were expected.");
@@ -76,9 +81,10 @@ namespace LuccaDevises.Tools
             }
         }
 
-        private string? ExtractAndAnalyseFirstLine(string? firstLine, int lineNumber)
+        private string ExtractAndAnalyseFirstLine(string? firstLine, int lineNumber)
         {
-            var match = Regex.Match(firstLine ?? string.Empty, @"^(\w{3});(\d*);(\w{3})$");
+            var line = firstLine ?? string.Empty;
+            var match = Regex.Match(line, @"^(\w{3});(\d*);(\w{3})$");
             if (!match.Success)
                 throw new InvalidDataException($"Ligne {lineNumber} doit respecter le format 'D1;M;D2'");
 
@@ -86,20 +92,21 @@ namespace LuccaDevises.Tools
             Amount = int.Parse(match.Groups[2].Value);
             ToCurrency = match.Groups[3].Value;
 
-            return firstLine;
+            return line;
         }
 
-        private string? ExtractAndAnalyseSecondLine(string? secondLine, int lineNumber)
+        private string ExtractAndAnalyseSecondLine(string? secondLine, int lineNumber)
         {
-            if (!int.TryParse(secondLine, out int converted) || converted <= 0)
+            var line = secondLine ?? string.Empty;
+            if (!int.TryParse(line, out int converted) || converted <= 0)
                 throw new InvalidDataException($"Ligne {lineNumber} doit être entier positif");
 
             ExchangeRatesCount = converted;
 
-            return secondLine;
+            return line;
         }
 
-        private string? ExtractAndAnalyseOtherLine(string? defaultLine, int lineNumber, int exchangeRatesCount)
+        private string ExtractAndAnalyseExchangeRateLine(string? defaultLine, int lineNumber, int exchangeRatesCount)
         {
             if (ExchangeRatesCount < exchangeRatesCount)
                 throw new InvalidDataException($"Le nombre de ligne de taux de change ne peut excéder celui spécifier à la ligne 2 ({ExchangeRatesCount});");

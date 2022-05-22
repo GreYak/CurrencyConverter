@@ -1,33 +1,72 @@
-﻿using LuccaDevises.Tools;
+﻿using Lucca.CurrencyConverter.Domain;
+using Lucca.CurrencyConverter.Domain.Contrats;
+using Lucca.CurrencyConverter.Domain.Model;
+using LuccaDevises.Tools;
+using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
 
-args = new string[1] { "./FilesFolder/Sample.csv"};             // TODO : supprimer.
-
-if (args.Length != 1)
+static class Program
 {
-    Console.Error.WriteLine("Un chemin de fichier doit être spécifier.");
-}
-else
-{
-    // Define the cancellation token.
-    CancellationTokenSource source = new CancellationTokenSource();
-    CancellationToken token = source.Token;
+    private static ICurencyConverterService _currencyConverterService = new CurrencyConverterService(
+            LoggerFactory.Create(builder =>
+            {
+                builder.AddConsole();
+            }).CreateLogger<CurrencyConverterService>()
+        );
 
-    try
+    static async Task Main(string[] args)
     {
-        var fileParser = new StreamParser(new FileManager(args[0]));
-        await foreach (string? currentLine in fileParser.ReadContent(token))
+        args = new string[1] { "./FilesFolder/Sample.csv" };             // TODO : supprimer.
+
+        if (args.Length != 1)
         {
-            Console.WriteLine(currentLine);
+            Console.Error.WriteLine("Un chemin de fichier doit être spécifier.");
+        }
+        else
+        {
+            // Define the cancellation token.
+            CancellationTokenSource source = new CancellationTokenSource();
+            CancellationToken token = source.Token;
+
+            try
+            {
+                var fileParser = new StreamParser(new FileManager(args[0]));
+                await _currencyConverterService.LoadExchangeRates(fileParser
+                                                                    .ReadContent(token)
+                                                                    .ToExchangeRate(token)
+                                                                  ,token);;
+            }
+            catch (InvalidDataException exc)
+            {
+                source.Cancel();
+                Console.Error.WriteLine($"Le fichier fourni n'a pas un format valide => {exc.Message}");
+            }
+            catch (Exception exc)
+            {
+                source.Cancel();
+                Console.Error.WriteLine($"Une erreur inattendue s'est produite => {exc.Message}");
+            }
+            finally
+            {
+                source.Dispose();
+            }
         }
     }
-    catch(Exception exc)
+
+    private static async IAsyncEnumerable<ExchangeRate> ToExchangeRate(this IAsyncEnumerable<string> fileContentEnumerator, [EnumeratorCancellation] CancellationToken token)
     {
-        source.Cancel();
-        Console.Error.WriteLine($"Le fichier fourni n'a pas un format valide => {exc.Message}");
-    }
-    finally
-    {
-        source.Dispose();
+        int countTuple = 0;
+        await foreach (var currentLine in fileContentEnumerator)
+        {
+            Console.WriteLine(currentLine);
+            if (++countTuple > StreamParser.FirstExchangeRateLineNumber)
+            {
+                string[] splittedLine = currentLine.Split(";");
+                yield return new ExchangeRate(new Currency(splittedLine[0]),
+                                              new Currency(splittedLine[2]), 
+                                              decimal.Parse(splittedLine[1])
+                                            );
+            }
+        }
     }
 }
-
