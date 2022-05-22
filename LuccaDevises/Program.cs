@@ -3,6 +3,7 @@ using Lucca.CurrencyConverter.Domain.Contrats;
 using Lucca.CurrencyConverter.Domain.Model;
 using LuccaDevises.Tools;
 using Microsoft.Extensions.Logging;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 
 static class Program
@@ -12,7 +13,7 @@ static class Program
             {
                 builder.AddConsole();
             }).CreateLogger<CurrencyConverterService>()
-        );
+        );      // TODO : injection de dépendances
 
     static async Task Main(string[] args)
     {
@@ -63,8 +64,8 @@ static class Program
             {
                 string[] splittedLine = currentLine.Split(";");
                 yield return new ExchangeRate(new Currency(splittedLine[0]),
-                                              new Currency(splittedLine[2]), 
-                                              decimal.Parse(splittedLine[1])
+                                              new Currency(splittedLine[1]), 
+                                              decimal.Parse(splittedLine[2], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture)
                                             );
             }
         }
