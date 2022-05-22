@@ -1,4 +1,6 @@
-﻿namespace Lucca.CurrencyConverter.Domain.Model
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Lucca.CurrencyConverter.Domain.Model
 {
     /// <summary>
     /// Represents a currency.
@@ -33,5 +35,9 @@
         /// Return a string to represent current instance.
         /// </summary>
         public override string ToString() => Key;
+
+        public override bool Equals(object? obj) => Equals(obj as Currency);
+
+        public override int GetHashCode() => Key.GetHashCode();
     }
 }

@@ -60,7 +60,7 @@ static class Program
         await foreach (var currentLine in fileContentEnumerator)
         {
             Console.WriteLine(currentLine);
-            if (++countTuple > StreamParser.FirstExchangeRateLineNumber)
+            if (++countTuple >= StreamParser.FirstExchangeRateLineNumber)
             {
                 string[] splittedLine = currentLine.Split(";");
                 yield return new ExchangeRate(new Currency(splittedLine[0]),
