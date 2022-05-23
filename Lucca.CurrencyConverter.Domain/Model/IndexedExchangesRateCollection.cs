@@ -23,7 +23,7 @@ namespace Lucca.CurrencyConverter.Domain.Model
         /// <param name="indexedExchangeRate"><paramref name="indexedExchangeRate"/></param>
         public void Add(IndexedExchangeRate indexedExchangeRate)
         {
-            Currency key = indexedExchangeRate.ExchangeRate.ToCurrency;
+            Currency key = indexedExchangeRate.ToCurrency;
             if (!_exchangeRatesByToCurrency.ContainsKey(key))
             {
                 _exchangeRatesByToCurrency.Add(key, indexedExchangeRate);

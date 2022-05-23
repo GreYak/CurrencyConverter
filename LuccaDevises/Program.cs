@@ -38,7 +38,7 @@ static class Program
                                                                   ,token);
 
                Console.WriteLine();
-               var result = _currencyConverterService.Convert( new Currency(fileParser.FromCurrency),
+               var result = await _currencyConverterService.Convert( new Currency(fileParser.FromCurrency),
                                                                 new Currency(fileParser.ToCurrency),
                                                                 fileParser.Amount);
 

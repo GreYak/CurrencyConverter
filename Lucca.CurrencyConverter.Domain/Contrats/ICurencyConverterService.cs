@@ -24,6 +24,6 @@ namespace Lucca.CurrencyConverter.Domain.Contrats
         /// <param name="amount">Amount in the <paramref name="fromCurrency"/></param>
         /// <returns>The Amount in the <paramref name="toCurrency"/></returns>
         /// <exception cref="IndexNotFoundException">When no changeRate have been found to ensure converting</exception>
-        int Convert(Currency fromCurrency, Currency toCurrency, int amount);
+        Task<int> Convert(Currency fromCurrency, Currency toCurrency, int amount);
     }
 }

@@ -36,10 +36,10 @@ namespace Lucca.CurrencyConverter.Domain.Model
         /// <param name="toCurrency">Currency in which changing <paramref name="fromCurrency"/></param>
         /// <returns><see cref="ExchangeRate"/></returns>
         /// <exception cref="IndexNotFoundException"></exception>
-        public ExchangeRate GetExchangeRate(Currency fromCurrency, Currency toCurrency)
+        public IndexedExchangeRate GetExchangeRate(Currency fromCurrency, Currency toCurrency)
         {
             if (_mainIndex.ContainsKey(fromCurrency) && _mainIndex[fromCurrency].TryToGetValue(toCurrency, out IndexedExchangeRate? indexedExchangeRate))
-                return indexedExchangeRate!.ExchangeRate;
+                return indexedExchangeRate!;
 
             throw new IndexNotFoundException($"ExchangeRate {fromCurrency}/{toCurrency} doesn't exist in the registry.");
         }
@@ -51,53 +51,51 @@ namespace Lucca.CurrencyConverter.Domain.Model
         public void AddExchangeRate(ExchangeRate exchangeRate)
         {
             var indexedExchangeRate = new IndexedExchangeRate(exchangeRate);
-            AddExchangeRate(indexedExchangeRate);
+            AddIndexedExchangeRate(indexedExchangeRate);
             ExtendExchangeRateByLinkingAfter(exchangeRate);
-            ExtendExchangeRateByLinkingBefore(exchangeRate);
+            ExtendExchangeRateByLinkingBefore(indexedExchangeRate);
         }
 
-        private void ExtendExchangeRateByLinkingAfter(ExchangeRate exchangeRateToExtend)
-        {
-            if (_mainIndex.TryGetValue(exchangeRateToExtend.ToCurrency, out IndexedExchangesRateCollection? extensionRatesCollection))
-            {
-                foreach (IndexedExchangeRate extensionRate in extensionRatesCollection)
-                {
-                    if (extensionRate.ExchangeRate.ToCurrency != exchangeRateToExtend.FromCurrency)
-                    {
-                        var newRate = extensionRate.ExchangeRate.Rate * exchangeRateToExtend.Rate;
-                        var linkedExchangeRate = new IndexedExchangeRate(exchangeRateToExtend.FromCurrency,
-                                                                            extensionRate.ExchangeRate.ToCurrency, 
-                                                                            newRate, 
-                                                                            extensionRate);
-                        AddExchangeRate(linkedExchangeRate);
-                    }
-                }
-            }
-        }
-
-        private void ExtendExchangeRateByLinkingBefore(ExchangeRate exchangeRateExtension)
+        private void ExtendExchangeRateByLinkingAfter(ExchangeRate exchangeRateExtension)
         {
             if (_reverseIndex.TryGetValue(exchangeRateExtension.FromCurrency, out IReadOnlyList<IndexedExchangeRate>? exchangeRatesToExtendCollection))
             {
-                foreach (IndexedExchangeRate exchangeRateToExtend in exchangeRatesToExtendCollection!)
+                var indexesToAdd = new List<IndexedExchangeRate>();
+                foreach (IndexedExchangeRate indexedExchangeRateToExtend in exchangeRatesToExtendCollection!)
                 {
-                    if (exchangeRateToExtend.ExchangeRate.FromCurrency != exchangeRateExtension.ToCurrency)
+                    if (exchangeRateExtension.ToCurrency != indexedExchangeRateToExtend.FromCurrency)         // TODO : insuffisant
                     {
-                        var newRate = exchangeRateToExtend.ExchangeRate.Rate * exchangeRateExtension.Rate;
-                        var linkedExchangeRate = new IndexedExchangeRate(exchangeRateToExtend.ExchangeRate.FromCurrency,
-                                                                            exchangeRateExtension.ToCurrency,
-                                                                            newRate,
-                                                                            exchangeRateToExtend);
-                        AddExchangeRate(linkedExchangeRate);
+                        var linkedExchangeRate = new IndexedExchangeRate(exchangeRateExtension, indexedExchangeRateToExtend);
+                        // AddIndexedExchangeRate(linkedExchangeRate);
+                        indexesToAdd.Add(linkedExchangeRate);
                     }
                 }
+                indexesToAdd.ForEach(i => AddIndexedExchangeRate(i));
             }
         }
 
-        private void AddExchangeRate(IndexedExchangeRate indexedExchangeRate)
+        private void ExtendExchangeRateByLinkingBefore(IndexedExchangeRate indexedExchangeRateToExtend)
+        {
+            if (_mainIndex.TryGetValue(indexedExchangeRateToExtend.ToCurrency, out IndexedExchangesRateCollection? exchangeRateExtensionsCollection))
+            {
+                var indexesToAdd = new List<IndexedExchangeRate>();
+                foreach (IndexedExchangeRate exchangeRateExtension in exchangeRateExtensionsCollection)
+                {
+                    if (exchangeRateExtension.ToCurrency != indexedExchangeRateToExtend.FromCurrency)            // TODO : insuffisant
+                    {
+                        var linkedExchangeRate = new IndexedExchangeRate(exchangeRateExtension, indexedExchangeRateToExtend);
+                        // AddIndexedExchangeRate(linkedExchangeRate);
+                        indexesToAdd.Add(linkedExchangeRate);
+                    }
+                }
+                indexesToAdd.ForEach(i => AddIndexedExchangeRate(i));
+            }
+        }
+
+        private void AddIndexedExchangeRate(IndexedExchangeRate indexedExchangeRate)
         {
             // Main index
-            Currency key = indexedExchangeRate.ExchangeRate.FromCurrency;
+            Currency key = indexedExchangeRate.FromCurrency;
             if (!_mainIndex.ContainsKey(key))
             {
                 _mainIndex[key] = new IndexedExchangesRateCollection();
@@ -105,7 +103,7 @@ namespace Lucca.CurrencyConverter.Domain.Model
             _mainIndex[key].Add(indexedExchangeRate);
 
             // Reverse Index
-            _reverseIndex.Add(indexedExchangeRate.ExchangeRate.ToCurrency, indexedExchangeRate);
+            _reverseIndex.Add(indexedExchangeRate.ToCurrency, indexedExchangeRate);
         }
     }
 }
