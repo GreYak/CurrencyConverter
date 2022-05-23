@@ -5,14 +5,14 @@ namespace Lucca.CurrencyConverter.Domain.Model
     /// <summary>
     /// Represents a collection of indexed Exchange rates, by CurrrencyTo.
     /// </summary>
-    internal class IdexedExchangeRateCollection : IEnumerable
+    internal class IndexedExchangesRateCollection : IEnumerable
     {
         public readonly Dictionary<Currency, IndexedExchangeRate> _exchangeRatesByToCurrency;
 
         /// <summary>
-        /// Initialize a new instance of <see cref="IdexedExchangeRateCollection"/>
+        /// Initialize a new instance of <see cref="IndexedExchangesRateCollection"/>
         /// </summary>
-        public IdexedExchangeRateCollection()
+        public IndexedExchangesRateCollection()
         {
             _exchangeRatesByToCurrency = new Dictionary<Currency, IndexedExchangeRate>();
         }
@@ -40,7 +40,7 @@ namespace Lucca.CurrencyConverter.Domain.Model
         /// <summary>
         /// <see cref="IEnumerator"/> to cross the <see cref="IndexedExchangeRate"/> of the collection.
         /// </summary>
-        /// <returns>An enumerator that iterates through the <see cref="IdexedExchangeRateCollection"/></returns>
+        /// <returns>An enumerator that iterates through the <see cref="IndexedExchangesRateCollection"/></returns>
         public IEnumerator GetEnumerator()
         {
             return _exchangeRatesByToCurrency.Values.GetEnumerator();

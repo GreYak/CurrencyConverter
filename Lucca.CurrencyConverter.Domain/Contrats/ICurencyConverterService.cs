@@ -1,4 +1,5 @@
 ﻿using Lucca.CurrencyConverter.Domain.Model;
+using Lucca.CurrencyConverter.Domain.Exceptions;
 
 namespace Lucca.CurrencyConverter.Domain.Contrats
 {
@@ -14,7 +15,7 @@ namespace Lucca.CurrencyConverter.Domain.Contrats
         /// <param name="cancellationToken"><see cref="CancellationToken"/></param>
         /// <returns><see cref="Task"/></returns>
         Task LoadExchangeRatesAsync(IAsyncEnumerable<ExchangeRate> exhangeRates, CancellationToken cancellationToken);
-        
+
         /// <summary>
         /// Convert an amount in a given currency, to another currency.
         /// </summary>
@@ -22,6 +23,7 @@ namespace Lucca.CurrencyConverter.Domain.Contrats
         /// <param name="toCurrency">Destination currency</param>
         /// <param name="amount">Amount in the <paramref name="fromCurrency"/></param>
         /// <returns>The Amount in the <paramref name="toCurrency"/></returns>
+        /// <exception cref="IndexNotFoundException">When no changeRate have been found to ensure converting</exception>
         int Convert(Currency fromCurrency, Currency toCurrency, int amount);
     }
 }
