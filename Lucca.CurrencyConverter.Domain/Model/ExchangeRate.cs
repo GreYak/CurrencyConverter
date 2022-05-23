@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Lucca.CurrencyConverter.Domain.Model
+﻿namespace Lucca.CurrencyConverter.Domain.Model
 {
     /// <summary>
     /// Represents a exchange rates between 2 <see cref="Currency"/>.

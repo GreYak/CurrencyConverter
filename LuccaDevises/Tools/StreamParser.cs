@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 namespace LuccaDevises.Tools
 {
     /// <summary>
-    /// Parser of file, to extract its content. 
+    /// Parser of an input stream, to validate its format & extract its content. 
     /// </summary>
     internal class StreamParser
     {

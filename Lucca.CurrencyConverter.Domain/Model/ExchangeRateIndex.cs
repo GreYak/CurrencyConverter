@@ -1,5 +1,4 @@
 ﻿using Lucca.CurrencyConverter.Domain.Tools;
-using System.Collections;
 
 namespace Lucca.CurrencyConverter.Domain.Model
 {

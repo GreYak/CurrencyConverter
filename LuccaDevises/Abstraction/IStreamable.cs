@@ -1,7 +1,7 @@
 ﻿namespace LuccaDevises.Abstraction
 {
     /// <summary>
-    /// Represents an instance which can be read by stream.
+    /// Represents an instance which can be a source of strem stream.
     /// </summary>
     internal interface IStreamable
     {

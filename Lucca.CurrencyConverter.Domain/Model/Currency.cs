@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace Lucca.CurrencyConverter.Domain.Model
+﻿namespace Lucca.CurrencyConverter.Domain.Model
 {
     /// <summary>
     /// Represents a currency.
@@ -31,9 +29,6 @@ namespace Lucca.CurrencyConverter.Domain.Model
         /// <returns>True if instances are equals, else false.</returns>
         public bool Equals(Currency? other) => Key == other?.Key;
 
-        /// <summary>
-        /// Return a string to represent current instance.
-        /// </summary>
         public override string ToString() => Key;
 
         public override bool Equals(object? obj) => Equals(obj as Currency);
