@@ -17,8 +17,6 @@ static class Program
 
     static async Task Main(string[] args)
     {
-        args = new string[1] { "./FilesFolder/Sample.csv" };             // TODO : supprimer.
-
         if (args.Length != 1)
         {
             Console.Error.WriteLine("Un chemin de fichier doit être spécifier.");

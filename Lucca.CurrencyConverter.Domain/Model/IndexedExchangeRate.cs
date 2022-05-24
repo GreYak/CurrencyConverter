@@ -39,6 +39,10 @@
         /// <remarks>It corresponds to the number of intermediate conversions.</remarks>
         public int Weight => (_previousIndexlinked?.Weight ?? 0) + 1;
 
+        /// <summary>
+        /// Get the list of rates composing the current exchange.
+        /// </summary>
+        /// <returns><see cref="IAsyncEnumerable<decimal> "/></returns>
         public async IAsyncEnumerable<decimal> Rates()
         {
             if (_previousIndexlinked is not null)

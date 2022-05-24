@@ -4,13 +4,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Lucca.CurrencyConverter.Domain
 {
-    public class CurrencyConverterService : ICurencyConverterService    // TODO => internal
+    public class CurrencyConverterService : ICurencyConverterService    
     {
         private readonly ILogger _logger;
         private readonly ExchangeRateIndex _index;
 
 
-        public CurrencyConverterService(ILogger<CurrencyConverterService> logger)
+        public CurrencyConverterService(ILogger logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _index = new ExchangeRateIndex();

@@ -63,10 +63,9 @@ namespace Lucca.CurrencyConverter.Domain.Model
                 var indexesToAdd = new List<IndexedExchangeRate>();
                 foreach (IndexedExchangeRate indexedExchangeRateToExtend in exchangeRatesToExtendCollection!)
                 {
-                    if (exchangeRateExtension.ToCurrency != indexedExchangeRateToExtend.FromCurrency)         // TODO : insuffisant
+                    if (exchangeRateExtension.ToCurrency != indexedExchangeRateToExtend.FromCurrency)         
                     {
                         var linkedExchangeRate = new IndexedExchangeRate(exchangeRateExtension, indexedExchangeRateToExtend);
-                        // AddIndexedExchangeRate(linkedExchangeRate);
                         indexesToAdd.Add(linkedExchangeRate);
                     }
                 }
@@ -81,10 +80,9 @@ namespace Lucca.CurrencyConverter.Domain.Model
                 var indexesToAdd = new List<IndexedExchangeRate>();
                 foreach (IndexedExchangeRate exchangeRateExtension in exchangeRateExtensionsCollection)
                 {
-                    if (exchangeRateExtension.ToCurrency != indexedExchangeRateToExtend.FromCurrency)            // TODO : insuffisant
+                    if (exchangeRateExtension.ToCurrency != indexedExchangeRateToExtend.FromCurrency)            
                     {
                         var linkedExchangeRate = new IndexedExchangeRate(exchangeRateExtension, indexedExchangeRateToExtend);
-                        // AddIndexedExchangeRate(linkedExchangeRate);
                         indexesToAdd.Add(linkedExchangeRate);
                     }
                 }
