@@ -2,19 +2,11 @@
 using Lucca.CurrencyConverter.Domain.Contrats;
 using Lucca.CurrencyConverter.Domain.Model;
 using LuccaDevises.Tools;
-using Microsoft.Extensions.Logging;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 
 static class Program
 {
-    private static ICurencyConverterService _currencyConverterService = new CurrencyConverterService(
-            LoggerFactory.Create(builder =>
-            {
-                builder.AddConsole();
-            }).CreateLogger<CurrencyConverterService>()
-        );      // TODO : injection de dépendances
-
     static async Task Main(string[] args)
     {
         if (args.Length != 1)
@@ -23,6 +15,8 @@ static class Program
         }
         else
         {
+            ICurencyConverterService _currencyConverterService = new CurrencyConverterService();
+
             // Define the cancellation token.
             CancellationTokenSource source = new CancellationTokenSource();
             CancellationToken token = source.Token;

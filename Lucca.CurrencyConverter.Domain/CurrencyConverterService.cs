@@ -1,18 +1,14 @@
 ﻿using Lucca.CurrencyConverter.Domain.Contrats;
 using Lucca.CurrencyConverter.Domain.Model;
-using Microsoft.Extensions.Logging;
 
 namespace Lucca.CurrencyConverter.Domain
 {
     public class CurrencyConverterService : ICurencyConverterService    
     {
-        private readonly ILogger _logger;
         private readonly ExchangeRateIndex _index;
 
-
-        public CurrencyConverterService(ILogger logger)
+        public CurrencyConverterService()
         {
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _index = new ExchangeRateIndex();
         }
 

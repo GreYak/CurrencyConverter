@@ -2,13 +2,11 @@
 using Lucca.CurrencyConverter.Domain.Contrats;
 using Lucca.CurrencyConverter.Domain.Exceptions;
 using Lucca.CurrencyConverter.Domain.Model;
-using Microsoft.Extensions.Logging;
 
 namespace Lucca.CurrencyConverter.Tests.Core
 {
     internal class CurrencyConverterTests
     {
-        private readonly Mock<ILogger> _mockLoger;
         private readonly ICurencyConverterService _currencyConverterService;
 
         private readonly List<ExchangeRate> ExchangeRateExamples = new List<ExchangeRate>()
@@ -30,8 +28,7 @@ namespace Lucca.CurrencyConverter.Tests.Core
 
         public CurrencyConverterTests()
         {
-            _mockLoger = new Mock<ILogger>();
-            _currencyConverterService = new CurrencyConverterService(_mockLoger.Object);
+            _currencyConverterService = new CurrencyConverterService();
         }
 
 
@@ -65,7 +62,7 @@ namespace Lucca.CurrencyConverter.Tests.Core
             (new Currency("EUR"),new Currency("AUD"), 10001, 12477),
             (new Currency("AUD"),new Currency("EUR"), 10001, 8017),
             // 3 Links + reverse
-            (new Currency("EUR"),new Currency("JPY"), 550, 59033),
+            (new Currency("EUR"),new Currency("JPY"), 550, 59033)
         };
 
         [Test]
@@ -94,12 +91,12 @@ namespace Lucca.CurrencyConverter.Tests.Core
             (new Currency("INR"), new Currency("INR"), 1),
             // Not indexed
             (new Currency("AAA"), new Currency("AUD"), 1),
-            (new Currency("JPY"), new Currency("AAA"), 1),
+            (new Currency("JPY"), new Currency("AAA"), 1)
         };
 
         [Test]
         [TestCaseSource(nameof(NotFoundCases))]
-        public async Task GivenNominalCases_WhenConvert_ThenExpectedRate((Currency from, Currency to, int amount) testLines)
+        public async Task GivenBadCurrencies_WhenConvert_ThenIndexNotFoundException((Currency from, Currency to, int amount) testLines)
         {
             await _currencyConverterService.LoadExchangeRatesAsync(Feed_LoadExchangeRatesAsync(ExchangeRateExamples), new CancellationToken());
 
@@ -107,6 +104,28 @@ namespace Lucca.CurrencyConverter.Tests.Core
             {
                 var result = await _currencyConverterService.Convert(testLines.from, testLines.to, testLines.amount);
             });
+        }
+
+        [Test]
+        public async Task GivenXPossibitiesFor1Exchange_WhenConvert_ThenQuicker()
+        {
+            var inputs = new List<ExchangeRate>()
+        {
+            new ExchangeRate(new Currency("AUD"), new Currency("CHF"), 1m),
+            new ExchangeRate(new Currency("AUD"), new Currency("KWU"), 2m),
+            new ExchangeRate(new Currency("KWU"), new Currency("CHF"), 2m),
+            new ExchangeRate(new Currency("AUD"), new Currency("JPY"), 3m),
+            new ExchangeRate(new Currency("JPY"), new Currency("USD"), 3m),
+            new ExchangeRate(new Currency("USD"), new Currency("KWU"), 3m)
+        };
+
+            Assert.DoesNotThrowAsync(async () =>
+            {
+                await _currencyConverterService.LoadExchangeRatesAsync(Feed_LoadExchangeRatesAsync(inputs), new CancellationToken());
+            });
+
+            var result = await _currencyConverterService.Convert(new Currency("AUD"), new Currency("CHF"), 500);
+            Assert.That(result, Is.EqualTo(500));
         }
     }
 }
